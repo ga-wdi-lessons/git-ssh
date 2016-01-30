@@ -1,202 +1,275 @@
-# Generating SSH Keys and Linking with Github
+# Github
 
 ## Learning Objectives
-* Explain how SSH serves as extra layer of security
-* Define and Differentiate between HTTPS and SSH
-* List the advantages of an SSH connection
+* Describe the differences between Git and Github
+* Explain what a branch is in Git
+* Understand Basic workflow on Github and differences between
+  issues, branches, pull requests, and merging
+* Create, merge and delete branches on local and remote repositories
+* Describe how branching and merging allows for collaboration during development
+* Resolve a merge conflict
 
-## Opening
-Secure Shell (SSH) is a command interface and protocol for securely getting access to a remote computer.
-SSH uses public-key cryptography to authenticate the remote computer and allow it to authenticate the user, if necessary. Both ends of the client/server connection are authenticated using a digital certificate, and passwords are protected by being encrypted.
+## Framing (5 min)
 
-Today, we will be learning about SSH keys and how we can use them in a way to identify trusted computers, without involving passwords.
+Turn-and-Talk: (1 min)
+Why are Git and Github important? What are the main advantage to us using git as developers?
+<!--collaboration tool -->
+Review of Github:
+<!-- (Drawing diagrams on board, students filling them in?)
+ -->
+1. What is the difference between a remote and local repository?
+2. Describe the fork/clone model, and how it is used for HW submission.
+3. Review Commit Progress and Steps for Pushing to a remote.
+3. Review how to add a remote repo and grab changes to that remote.
 
-As you may recall, we have been using `https://` clone URLs when we first started using Git because this allows us to access all repositories, public and private, and these URLs work everywhere.
+## Git versus Github (10 min)
 
-However, as you might have noticed, whenever you `git pull`, or `git push` to the remote repository using HTTPS, you'll be asked for your GitHub username and password.
+* Git is not Github. Git is a piece of software that you install locally on your computer which handles 'version control' for you.
+* At it's core, Github is a just a place to store your identical working directories, or repositories. It's literally a hub for storing Git repositories.
+* Github is greatly used when working on software development projects, where multiple people are working on the same code. Provides a centrialized repository or "repo" for everyone working on the group to update work and document changes
+* Although Popular in Software Development, is not JUST software development, can be used for any collaboration projects
+* Allows People to Simulatenously work on the same software, and to control and track changes in software development progress
+* Most of Github Public! Github is really an Open Source Platform to encourage and collaboration and community participation to contribute
 
-Now, not only is this disruptive in our workflow, especially in the scope of this class where we are just developing in an educational environment, but sometimes we might require an extra layer of security rather just our user name and password.
+## You Do: Branching Introduction (15 min)
 
-Enter SSH clone URLs. These allow us to use the SSH protocol and require a two step authentication process via an encrypted keypair, which will not only speed up development but also give us extra control over the computers that can connect to our repositories.
+We are going to start with a [brief tutorial](http://pcottle.github.io/learnGitBranching/).  This is an introduction to branching.
 
-If your are interested in learning more we recommend you checkout [this chapter](https://git-scm.com/book/en/v2/Git-on-the-Server-The-Protocols) of the Pro Git book.
+- Do Levels 1-3.  Stop at 4: "Rebase Introduction".
+- Take your time:
+  - Read all the dialogs.  They are part of the tutorial.
+  - Think about what you want to achieve
+  - Think about the results you expect *before* you press enter.
+- Whenever you see/type `git commit`, it may help to assume changes have been made and staged.  Why else would you "commit"?
 
-## Step 0: Checking for existing Keys
-First, we need to check for existing SSH keys on your computer. Open Terminal and enter:
+## Think/Pair/Share-1/3/6: Why Branches?  (10 min)
 
-  ```
-  $ ls -al ~/.ssh
-  # Lists the files in your .ssh directory, if they exist
-  ```
+You've had a brief overview.  Let's take a minute to think about why they are important, then share with your neighbor, and we'll share what we feel is important.
 
-If you see two files: id_rsa and id_rsa.pub, skip to step 2. Otherwise proceed to step 1.
+Q. Why is branching an important part of git?
+---
+
+> A. Branches are useful for many reasons, but some of the most common ones:
+
+> 1. To allow experimentation. By switching to a new branch, we can experiment,
+and if the experiment fails, we can delete it and easily switch back to master
+(or another branch of our choice). If it succeeds, we can merge those changes
+into master.
+2. To allow work to proceed on multiple features (or by multiple people) without
+interfering. When a feature is complete, it can be merged back into master.
+3. To allow easy bug fixes on a stable version while features are being developed.
+
+## You Do: Research Git Branching (15 min)
+
+- Read the "Using Branches" of
+* [Atlassian - Git Branching Tutorial](https://www.atlassian.com/git/tutorials/using-branches)
+  - Let me know when you have reached the "git merge" section
+  - You will see references to Subversion(SVN).  SVN is an older version control system.  I don't believe you need to know more than that to understand the comparisons.
+
+## What are Branches? (5 min)
+
+A branch in git is just a label on a  particular commit in a repository, along
+with all of it's history (parent commits).
+
+What makes a branch special in git (vs a tag), is that we're always *on* a
+specific branch, and when we commit, the current branch label moves forward to
+the new commit. Another way to say that is the branch label always stays at the
+tip of the branch.
+
+![Git Branch Diagram](https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/01.svg)
+> The diagram above visualizes a repository with two isolated lines of development, one for a little feature, and one for a longer-running feature. By developing them in branches, it’s not only possible to work on both of them in parallel, but it also keeps the main master branch free from questionable code.
+
+> From [Atlassian - Git Branching Tutorial](https://www.atlassian.com/git/tutorials/using-branches/git-branch)
 
 
-## Step 1: Generate a new SSH Key
-1. With Terminal still open, copy and paste the text below. Make sure you substitute in your GitHub email address.
+## Break? (10 min)
 
-  ```
-  $ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
-  # Creates a new ssh key, using the provided email as a label
-  # Generating public/private rsa key pair.
-  ```
 
-2. We strongly suggest keeping the default settings as they are, so when you're prompted to "Enter a file in which to save the key", just press Enter to continue.
+## GitHub Workflow (10 min)
+> From [Github Guides](https://guides.github.com/introduction/flow/)
 
-  ```
-  Enter file in which to save the key (/Users/you/.ssh/id_rsa): [Press enter]
-  ```
 
-3. You'll be asked to enter a passphrase. We recommend no passphrase, just press Enter twice to continue.
+## Example (15 min)
 
-  ```
-  Enter passphrase (empty for no passphrase): [Type a passphrase]
-  # Enter same passphrase again: [Type passphrase again]
-  ```
+(Use [GitUp](http://gitup.co) to demo visually what's happening).
 
-4. After you enter a passphrase, you'll be given the fingerprint, or id, of your SSH key. It will look something like this:
+- Make directory which will contain repo:
 
-  ```
-  Your identification has been saved in /Users/you/.ssh/id_rsa.
-  # Your public key has been saved in /Users/you/.ssh/id_rsa.pub.
-  # The key fingerprint is:
-  # 01:0f:f4:3b:ca:85:d6:17:a1:7d:f0:68:9d:f0:a2:db your_email@example.com
-  ```
-As well as generate some neat ASCII art too:
-  ```
-  The key's randomart image is:
-  +--[ RSA 2048]----+
-  |        .o..o..=+|
-  |       ..  ..o= +|
-  |        + + o+ + |
-  |         X o .o o|
-  |        E =    . |
-  |                 |
-  |                 |
-  |                 |
-  |                 |
-  +-----------------+
-  ```
+  `mkdir git-branching`
 
-Great now that we have created a new key, we need to add it to the ssh-agent so we can easily access it.
+  `cd git-branching`
 
-## Step 2: Add Your Key to the SSH-Agent
-To configure the ssh-agent program to use your SSH key:
-1. Ensure ssh-agent is enabled:
+  `git status`
 
-  ```
-  # start the ssh-agent in the background
-  $ eval "$(ssh-agent -s)"
-  # Agent pid 59566
-  ```
+  `>fatal: Not a git repository (or any of the parent directories): .git`
 
-2. Add your SSH key to the ssh-agent:
+  `git init`
 
-  ```
-  $ ssh-add ~/.ssh/id_rsa
-  # Identity added: ...
-  ```
+  `>Initialized empty Git repository in /Users/jsm/development/wdi-7/sandbox/git-branching/.git/`
 
-*Note*: If you didn't generate a new SSH key in Step 1, and used an existing SSH key instead, you will need to replace `id_rsa` in the above command with the name of your existing private key file.
+  **Note the change in the CL prompt here**
 
-## Step 3: Add Your SSH Key to your Github Account
-To configure your GitHub account to use your SSH key:
-
-Copy the SSH key to your clipboard with:
-
-  ```
-  $ pbcopy < ~/.ssh/id_rsa.pub
-  # Copies the contents of the id_rsa.pub file to your clipboard
-  ```
-
-*Note*: This is a Mac only command, if you are using a different machine run `cat ~/.ssh/id_rsa.pub` and manually copy the output.
-It's important to copy the key exactly without adding newlines or whitespace.
-
-Keep in mind that your key may also be named id_dsa.pub, id_ecdsa.pub or id_ed25519.pub, in which case you must change the filename in the above command
-
-Then in Github:
-
-1. In the top right corner of any page, click your profile photo, then click Settings.
-2. In the user settings sidebar, click SSH keys.
-3. Click Add SSH key.
-4. In the Title field, add a descriptive label that uniquely identifies the computer you're currently using, e.g. `Nick's MacBook Air`.
-5. Paste your key into the "Key" field
-6. Click Add key
-7. Confirm the action by entering your GitHub password
-
-## Step 4: Checking your Connection
-To make sure everything is working, you'll now try to SSH into GitHub. When you do this, you may be asked to authenticate this action using your password, which is the SSH key passphrase you created earlier.
-
-To do this let's:
-
-1. Open Terminal and enter:
+  `git status`
 
   ```
-  $ ssh -T git@github.com
-  # Attempts to ssh to GitHub
+  >On branch master
+
+  >Initial commit
+
+  >nothing to commit (create/copy files and use "git add" to track)
   ```
+- Create our sample file
 
-2. You may see this warning:
+  `touch branching.txt`
 
-  ```
-  The authenticity of host 'github.com (207.97.227.239)' can't be established.
-  # RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
-  # Are you sure you want to continue connecting (yes/no)?
-  ```
+  **Note the change in the CL prompt here**
 
-  It is now our responsibility to ensure that we are connecting to GitHub. We do this by verify the fingerprint displayed in the message against [keys provided by github](https://help.github.com/articles/what-are-github-s-ssh-key-fingerprints/):
+- Make initial commt
 
-  - RSA: `16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48`
-  - DSA: `ad:1c:08:a4:40:e3:6f:9c:f5:66:26:5d:4b:33:5d:8c`
-  - RAS SHA256: `SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8`
-  - DSA SHA256: `SHA256:br9IjFspm1vxR3iA35FWE+4VTyz1hYVLIE2t1/CeyWQ`
+  `git add branching.txt`
 
-3. You should then see output similar to this:
-  ```
-  Hi <username>! You've successfully authenticated, but GitHub does not
-  # provide shell access.
-  ```
-If the username in the message is yours, you've successfully set up your SSH key!
+  `git commit -m "initial commit: ..."`
 
-*Note*: If you receive a message about "access denied," please notify an instructor or you can [read these instructions for diagnosing the issue](https://help.github.com/articles/error-permission-denied-publickey/)
+  **Note the change in the CL prompt here**
 
-*Note*: If you're switching from HTTPS to SSH, you'll now need to update your remote repository URLs. For more information, [see Changing a remote's URL](https://help.github.com/articles/changing-a-remote-s-url/).
+- Add a line to branching.txt and commit
 
-## Upstream on a Cloned Repo
+  [add line branching.txt]
 
-![Git Pull Upstream](git06.jpg)
+  `git add branching.txt`
 
-Since we have all already forked and cloned the GA-DC/Curriculum repository onto our local machine - we need a way to be able to update our local copy with any changes being made to the master repository.
+  `git commit -m "add line to branching.txt"`
 
-One of the ways we can do this is by establishing a link to this remote repository so that we can get all the changes anytime we want.
+  **Note the change in the CL prompt here**
 
-The convention is to add an `upstream` remote.
+- Make and checkout a feature branch. Make a change to branching.txt and commit
+  `git branch feature`
 
-This remote is where we can pull from at any time, but do not have permission to push our changes.
+  `git checkout feature`
 
-So let's go ahead and set up our new remote for our local curriculum repository.
+  **going forward we will always use `git checkout -b <branch-name>` to the above two commands in one**
+
+  **Note the change in the CL prompt here**
+
+  Add a line to branching.txt
+
+  `git add branching.txt`
+
+  `git commit -m "add line to branching.txt"`
+
+  `git checkout master`
+
+  Switch back and forth between the two with atom open.
+
+- Switch back to master and make a change to branching.txt
+  On master, change the first line
+
+  `git add branching.txt`
+
+  `git commit -m "change first line in branching.txt"`
+
+- Checkout the feature branch, merge in changes to master then merge feature into master
+
+  `git checkout feature`
+
+  `git merge master`
+
+  `git checkout master`
+
+  `git merge feature`
+
+  `git branch -d feature`
+
+### FtF and Questions
+
+### You Do: A new project (15 min)
+
+1. Create the structure
+ - In ~/wdi/sandbox.  Create a directory and initialize a new repository
+ - Create an index.html and commit
+ - Fill out html boilerplate and put some elements on the page then commit
+- Add some styling
+  - Create a branch called "style"
+  - Create a stylesheet link it to your html and add some styling to your page then commit
+- Add some functionality
+  - Create a new branch from master called "alert"
+  - Create a script to alert when an element on your page is pressed and commit
 
 
+## Common Commands for Managing Branches
 
-## YOU-DO: Setup Upstream for Curriculum Repo
-1. Students should visit the [Curriculum](https://github.com/ga-dc/curriculum)'s page and copy the ssh clone url to the clipboard
-2. In our terminal, change directories into our local curriculum directory
-```
-# in ~/wdi
-$ cd curriculum
-```
-3. See all current remotes with:
-`$ git remote -v`
-4. Add a new remote named upstream to our repository
-5. Pull down updates from the upstream remote
+* `git branch <new_branch_name>` - create a new branch
+* `git checkout <branch_name>` - switch to a specific branch (checks out tip commit and makes branch active)
+* `git checkout -b <new_branch_name>` - create a new branch and check it out in one step
+* `git branch` - list local branches (`-a` lists local and remote)
+* `git branch -d <branch_to_delete>` - delete a branch
+  * will not let you delete if branch isn't merged into another branch (i.e. would cause data loss)
+  * `git branch -D <branch_to_delete>` - over-rides and deletes a non-merged branch
+* `git merge <branch_name>` - merges `<branch_name>` into the current branch, creating a new merge commit in the process
 
-When you finish, please go back into Github and make sure your profile has your accurate FULL NAME, and a relevant Photo of you.
-Your presence on github is important! Potential employers will visit your profile!
 
-## Closing
-Go over learning objectives, and make sure everyone's profiles are up to date.
+## Exercise - Pushing and PRs from Branches (10 min)
 
-## Resources
-* [Github guide to configure SSH keys](https://help.github.com/articles/generating-ssh-keys/#step-1-check-for-ssh-keys)
-* [Changing a remote's URL](https://help.github.com/articles/changing-a-remote-s-url/)
-* [Configuring a remote for a fork](https://help.github.com/articles/configuring-a-remote-for-a-fork/)
+Many OSS projects request that you create pull requests from a non-master branch.
+
+1. Fork and Clone https://github.com/ga-dc/git-tricks.
+2. Create and switch to a branch called `<your_name>_suggestion`.
+3. Add your own "trick".
+4. Commit, and push that change to your remote called 'origin' (your fork)
+5. Create a pull request from that branch to the upstream (ga-dc) master branch
+
+## Merge Conflicts (5 min)
+
+When we try to merge two branches (or commits from the same branch from a remote), changes may conflict. In this case, git will stop and ask us to fix the issues manually.
+
+To do so:
+
+1. Locate which files contain conflicts using `git status`
+2. Open those files and fix the conflicts. (Look for the '<<<<', '====', and '>>>>' which will guide you to the conflict)
+3. Commit the fixes.
+
+
+## Exercise - Merge Conflicts (20 min)
+
+1. Pair up with someone.
+- Pick someone as the 'primary', and the 'secondary'.
+- The primary should create a repo and add the secondary as a collaborator (search github for how to do this)
+- Both members should clone the repo, and make changes on the "master" branch.
+
+Merging commits:
+
+1. Make commits on one computer and push them.
+- Pull them to the other computer.
+- Repeat the other way.
+
+Merge conflicts:
+
+1. Both students make changes on your respective working dirs, to the same line, of the same file.  Commit and push the changes.
+- One collaborator will be forced to solve the merge conflicts, when they pull the changes to the same line.
+- Practice resolving the commit.
+- Repeat, ensuring the other partner pushes second, forcing them to resolve the new conflict.
+
+## Homework
+
+From this point on, all homework submissions should be a pull request from a feature (or 'topic') branch, named `<your_name>_solution`.
+
+
+## `git mergetool` (An exercise for the reader)
+
+Some merge conflicts can be quite confusing.  Git provides a way to use a visual tool to assist in resolving the merge conflicts.
+
+If you have installed XCode, an decent tool (opendiff) is used.  For this class, we will use [KDiff3](http://kdiff3.sourceforge.net/).  Here's an [example, with images](http://www.gitguys.com/topics/merging-with-a-gui#Merging_with_kdiff3), including a way to try it first.
+
+- Install via homebrew: `brew install kdiff3`
+- Setup KDiff3 as your merge too using [these instructions](http://naleid.com/blog/2012/01/12/how-to-use-kdiff3-as-a-3-way-merge-tool-with-mercurial-git-and-tower-app).  
+  - Be sure to skip the "Installation" steps.
+  - Stop at "Git Tower Integration"
+- When you have a merge conflict, you can type `git mergetool` to see a 3-way merge and the merge results.  Like this: ![](http://naleid.com/images/2012/01/kdiff3_merge_window_fixed.png)
+
+
+## References
+
+* [Git Book - Git Branching - Basic Branching and Merging](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging)
+* [Atlassian - Git Branching Tutorial](https://www.atlassian.com/git/tutorials/using-branches)
+* [Interactive Git Branching Tutorial](http://pcottle.github.io/learnGitBranching/)
+* [Git Sandbox](http://pcottle.github.io/learnGitBranching/?NODEMO)
