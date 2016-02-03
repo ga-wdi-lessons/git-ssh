@@ -1,184 +1,77 @@
-# Generating SSH Keys and Linking with Github
+# Introduction to Github
 
 ## Learning Objectives
-* Explain how SSH serves as extra layer of security
-* Define and Differentiate between HTTPS and SSH
-* List the advantages of an SSH connection
 
-## Opening
-Secure Shell (SSH) is a command interface and protocol for securely getting access to a remote computer.
-SSH uses public-key cryptography to authenticate the remote computer and allow it to authenticate the user, if necessary. Both ends of the client/server connection are authenticated using a digital certificate, and passwords are protected by being encrypted.
+* Describe the differences between Git and Github
+* Explain what is an Upstream Repo
+* Fork, Clone, and Add WDI Curriculum as an Upstream Repo
+* Describe Github Features including Issues, Branches, and Pull Requests
+* Fork Github quiz repo, Create a solution_quiz_branch, and Create a Pull Request
 
-Today, we will be learning about SSH keys and how we can use them in a way to identify trusted computers, without involving passwords.
+## Framing (10 min)
 
-As you may recall, we have been using `https://` clone URLs when we first started using Git because this allows us to access all repositories, public and private, and these URLs work everywhere.
+<!--OPENING  -->
+Review Git Basics
+<!--Git is a touch concept, can I get a fist to five from everyone on how they are feeling about git ? -->
 
-However, as you might have noticed, whenever you `git pull`, or `git push` to the remote repository using HTTPS, you'll be asked for your GitHub username and password.
+<!--Ideas:
+1. Drawing diagrams on board, students filling them in?
+2. 5 MIN Q & A for anything unclear about git?
+3. Quick exercise making commits?
+4. Asking Quiz Questions to students?
+-->
+1. What is the most common workflow for creating save points while working locally?
+2. What commands are used to share changes (commits) between repos?
+3. Describe the fork/clone model, and how it is used for HW submission.
+4. What are the differences between git and github?
 
-Now, not only is this disruptive in our workflow, especially in the scope of this class where we are just developing in an educational environment, but sometimes we might require an extra layer of security rather just our user name and password.
+<!--Introduction To New Material-->
 
-Enter SSH clone URLs. These allow us to use the SSH protocol and require a two step authentication process via an encrypted keypair, which will not only speed up development but also give us extra control over the computers that can connect to our repositories.
+## Git versus Github (10 min)
 
-If your are interested in learning more we recommend you checkout [this chapter](https://git-scm.com/book/en/v2/Git-on-the-Server-The-Protocols) of the Pro Git book.
+* Git is the version control software we use locally on our computers in order to keep track of our files, directories, and our modifications to them in a central repository.
+* GitHub is a public hosting site for storing repositories. It's a place where all of our repos are stored remotely on a server.
+* It's literally a "hub" for storing Git repositories and a social platform for people to collaborate and work on open source projects
+* Github is not only used for software development. It can be used for any collaboration projects. You can store text documents or other file types.
+* Most of repos on Github are Public. Github is Open Source to encourage collaboration
 
-## Step 0: Checking for existing Keys
-First, we need to check for existing SSH keys on your computer. Open Terminal and enter:
+### Why do we use Github? (5 min)
 
-  ```
-  $ ls -al ~/.ssh
-  # Lists the files in your .ssh directory, if they exist
-  ```
+* Visual Interface to See and Navigate Through our Repositories
+* Provides a Remote Backup/Copy of our files
+* Allows for Collaboration and Sharing Work Easy
+* Provides an issue tracking system
+* Place to Show Work off to Employers
 
-If you see two files: id_rsa and id_rsa.pub, skip to step 2. Otherwise proceed to step 1.
+## Git Remote: Upstream, Fetch, and Pull (10 min)
 
-
-## Step 1: Generate a new SSH Key
-1. With Terminal still open, copy and paste the text below. Make sure you substitute in your GitHub email address.
-
-  ```
-  $ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
-  # Creates a new ssh key, using the provided email as a label
-  # Generating public/private rsa key pair.
-  ```
-
-2. We strongly suggest keeping the default settings as they are, so when you're prompted to "Enter a file in which to save the key", just press Enter to continue.
-
-  ```
-  Enter file in which to save the key (/Users/you/.ssh/id_rsa): [Press enter]
-  ```
-
-3. You'll be asked to enter a passphrase. We recommend no passphrase, just press Enter twice to continue.
-
-  ```
-  Enter passphrase (empty for no passphrase): [Type a passphrase]
-  # Enter same passphrase again: [Type passphrase again]
-  ```
-
-4. After you enter a passphrase, you'll be given the fingerprint, or id, of your SSH key. It will look something like this:
-
-  ```
-  Your identification has been saved in /Users/you/.ssh/id_rsa.
-  # Your public key has been saved in /Users/you/.ssh/id_rsa.pub.
-  # The key fingerprint is:
-  # 01:0f:f4:3b:ca:85:d6:17:a1:7d:f0:68:9d:f0:a2:db your_email@example.com
-  ```
-As well as generate some neat ASCII art too:
-  ```
-  The key's randomart image is:
-  +--[ RSA 2048]----+
-  |        .o..o..=+|
-  |       ..  ..o= +|
-  |        + + o+ + |
-  |         X o .o o|
-  |        E =    . |
-  |                 |
-  |                 |
-  |                 |
-  |                 |
-  +-----------------+
-  ```
-
-Great now that we have created a new key, we need to add it to the ssh-agent so we can easily access it.
-
-## Step 2: Add Your Key to the SSH-Agent
-To configure the ssh-agent program to use your SSH key:
-1. Ensure ssh-agent is enabled:
-
-  ```
-  # start the ssh-agent in the background
-  $ eval "$(ssh-agent -s)"
-  # Agent pid 59566
-  ```
-
-2. Add your SSH key to the ssh-agent:
-
-  ```
-  $ ssh-add ~/.ssh/id_rsa
-  # Identity added: ...
-  ```
-
-*Note*: If you didn't generate a new SSH key in Step 1, and used an existing SSH key instead, you will need to replace `id_rsa` in the above command with the name of your existing private key file.
-
-## Step 3: Add Your SSH Key to your Github Account
-To configure your GitHub account to use your SSH key:
-
-Copy the SSH key to your clipboard with:
-
-  ```
-  $ pbcopy < ~/.ssh/id_rsa.pub
-  # Copies the contents of the id_rsa.pub file to your clipboard
-  ```
-
-*Note*: This is a Mac only command, if you are using a different machine run `cat ~/.ssh/id_rsa.pub` and manually copy the output.
-It's important to copy the key exactly without adding newlines or whitespace.
-
-Keep in mind that your key may also be named id_dsa.pub, id_ecdsa.pub or id_ed25519.pub, in which case you must change the filename in the above command
-
-Then in Github:
-
-1. In the top right corner of any page, click your profile photo, then click Settings.
-2. In the user settings sidebar, click SSH keys.
-3. Click Add SSH key.
-4. In the Title field, add a descriptive label that uniquely identifies the computer you're currently using, e.g. `Nick's MacBook Air`.
-5. Paste your key into the "Key" field
-6. Click Add key
-7. Confirm the action by entering your GitHub password
-
-## Step 4: Checking your Connection
-To make sure everything is working, you'll now try to SSH into GitHub. When you do this, you may be asked to authenticate this action using your password, which is the SSH key passphrase you created earlier.
-
-To do this let's:
-
-1. Open Terminal and enter:
-
-  ```
-  $ ssh -T git@github.com
-  # Attempts to ssh to GitHub
-  ```
-
-2. You may see this warning:
-
-  ```
-  The authenticity of host 'github.com (207.97.227.239)' can't be established.
-  # RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
-  # Are you sure you want to continue connecting (yes/no)?
-  ```
-
-  It is now our responsibility to ensure that we are connecting to GitHub. We do this by verify the fingerprint displayed in the message against [keys provided by github](https://help.github.com/articles/what-are-github-s-ssh-key-fingerprints/):
-
-  - RSA: `16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48`
-  - DSA: `ad:1c:08:a4:40:e3:6f:9c:f5:66:26:5d:4b:33:5d:8c`
-  - RAS SHA256: `SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8`
-  - DSA SHA256: `SHA256:br9IjFspm1vxR3iA35FWE+4VTyz1hYVLIE2t1/CeyWQ`
-
-3. You should then see output similar to this:
-  ```
-  Hi <username>! You've successfully authenticated, but GitHub does not
-  # provide shell access.
-  ```
-If the username in the message is yours, you've successfully set up your SSH key!
-
-*Note*: If you receive a message about "access denied," please notify an instructor or you can [read these instructions for diagnosing the issue](https://help.github.com/articles/error-permission-denied-publickey/)
-
-*Note*: If you're switching from HTTPS to SSH, you'll now need to update your remote repository URLs. For more information, [see Changing a remote's URL](https://help.github.com/articles/changing-a-remote-s-url/).
-
-## Upstream on a Cloned Repo
+<!--Does Anyone Remember How to Add a Remote Git Repo?-->
 
 ![Git Pull Upstream](git06.jpg)
 
-Since we have all already forked and cloned the GA-DC/Curriculum repository onto our local machine - we need a way to be able to update our local copy with any changes being made to the master repository.
+After we have already forked and cloned someone else's repository onto our local machine - we need a way to be able to update our local copy with any changes being made to that master repository.
 
-One of the ways we can do this is by establishing a link to this remote repository so that we can get all the changes anytime we want.
+One of the ways we can do this is by establishing a link to this remote repository that points "upstream" to that repo on Github so that we can get all the changes anytime we want.
 
 The convention is to add an `upstream` remote.
 
+The upstream repo could be compared to the gatekeeper of the project or the original repo. Your forked copy is typically called the origin repo
+
+```
+$ git remote add upstream <original_github_repo_url>
+
+```
 This remote is where we can pull from at any time, but do not have permission to push our changes.
 
-So let's go ahead and set up our new remote for our local curriculum repository.
+<!--SHOW TRYING TO PUSH UP TO MASTER, DON'T PUSH UP -->
 
+## YOU-DO Fork and Clone the Curriculum Repo (5 min)
 
+Fork the Curriculum Repo to your personal account. Clone your fork to your computer in your ~/wdi folder.
 
-## YOU-DO: Setup Upstream for Curriculum Repo
+NOTE: If you already have a curriculum folder in your ~/wdi folder, delete or rename it before you clone.
+
+## YOU-DO: Setup Upstream for Curriculum Repo (10 min)
 1. Students should visit the [Curriculum](https://github.com/ga-dc/curriculum)'s page and copy the ssh clone url to the clipboard
 2. In our terminal, change directories into our local curriculum directory
 ```
@@ -190,13 +83,168 @@ $ cd curriculum
 4. Add a new remote named upstream to our repository
 5. Pull down updates from the upstream remote
 
-When you finish, please go back into Github and make sure your profile has your accurate FULL NAME, and a relevant Photo of you.
-Your presence on github is important! Potential employers will visit your profile!
+```
+$ git pull origin upstream
+```
 
-## Closing
-Go over learning objectives, and make sure everyone's profiles are up to date.
+## Break (10 min)
 
-## Resources
-* [Github guide to configure SSH keys](https://help.github.com/articles/generating-ssh-keys/#step-1-check-for-ssh-keys)
-* [Changing a remote's URL](https://help.github.com/articles/changing-a-remote-s-url/)
-* [Configuring a remote for a fork](https://help.github.com/articles/configuring-a-remote-for-a-fork/)
+## Github Features: Issues, Branches, Pull-Requests, and Merging
+
+### Creating Issues on Github (5 min)
+
+An Issue is a note on a repo regarding some matter that needs attention. It could be a bug, a suggestion for a new feature, a question about the repo or code, etc! On GitHub you can also label, search and assign issues, which help with managing projects.
+
+In this example, we have a github practice repository, but it's completely empty and there is no README [main information page you see on github repos]! It needs more information so students know what the heck this repo is about. Let's open an Issue!
+
+### I-DO: Create a Github Issue
+
+Now this issue has a permanent home (URL) that you can reference even after it is closed. Next, we need to work towards adding a README and closing this issue. Let's make a new branch....
+
+### Think/Pair/Share-1/3/6: Why Branches?  (15 min)
+
+We are going to start with reading [Git Branching - Basic Branching and Merging](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging/).  This is an introduction to branching.
+
+Instructions: Take 5 minutes to read up to Basic Merge Conflicts and STOP THERE (5 min).
+
+Take another minute to think about why branches/branching are important. Now, turn and talk with your neighbor and discuss your thoughts.
+
+Now, turn and share with your neighbor your thoughts, and we'll share what we feel is important.
+
+Q. Why is branching an important part of git?
+
+---
+> A. Branches are useful for many reasons, but some of the most common ones:
+
+> 1. EXPERIEMENTATION -To allow experimentation. By switching to a new branch, we can experiment,
+and if the experiment fails, we can delete it and easily switch back to master
+(or another branch of our choice). If it succeeds, we can merge those changes
+into master.
+2. WORKFLOW/COLLABORATION-To allow work to proceed on multiple features (or by multiple people) without
+interfering. When a feature is complete, it can be merged back into master.
+3. EASILY FIX BUGS-To allow easy bug fixes on a stable version while features are being developed.
+
+<!--NEED VISUAL TOOL LESSON BRANCHES-->
+
+### What are Branches? (5 min)
+
+A branch in git is just a label on a particular commit in a repository, along
+with all of it's history (parent commits).
+
+What makes a branch special in git (vs a tag), is that we're always *on* a
+specific branch, and when we commit, the current branch label moves forward to
+the new commit. Another way to say that is the branch label always stays at the
+tip of the branch.
+
+![Git Branch Diagram](https://www.atlassian.com/git/images/tutorials/collaborating/using-branches/01.svg)
+> The diagram above visualizes a repository with two isolated lines of development, one for a little feature, and one for a longer-running feature. By developing them in branches, it’s not only possible to work on both of them in parallel, but it also keeps the main master branch free from questionable code.
+
+> From [Atlassian - Git Branching Tutorial](https://www.atlassian.com/git/tutorials/using-branches/git-branch)
+
+### I-DO: Create a new branch (5 min)
+
+Let's create a new branch called Add-Readme.
+
+`git branch Add-Readme` - create a new branch called Add-Readme
+`git checkout Add-Readme` - switch to this particular branch
+
+We can combine these two steps into one by doing the following:
+`git checkout -b <new_branch_name>`
+
+Let's add a readme.md file, add a few sentences about this repo, then commit our changes.
+
+`$ touch readme.md`
+`$ git add readme.md`
+`$ git commit -m "Inital Commit"`
+
+Now, we need to push this branch to our Repo Remote. We want to make sure to push origin <branch_name>, not push origin master
+
+`$ git push origin Add-Readme`
+
+## Common Commands for Managing Branches
+
+* `git branch <new_branch_name>` - create a new branch
+* `git checkout <branch_name>` - switch to a specific branch (checks out tip commit and makes branch active)
+* `git checkout -b <new_branch_name>` - create a new branch and check it out in one step
+* `git branch` - list local branches (`-a` lists local and remote)
+* `git branch -d <branch_to_delete>` - delete a branch
+* will not let you delete if branch isn't merged into another branch (i.e. would cause data loss)
+* `git branch -D <branch_to_delete>` - over-rides and deletes a non-merged branch
+* `git merge <branch_name>` - merges `<branch_name>` into the current branch, creating a new merge commit in the process
+
+### Pull Requests (10 min)
+
+Pull Requests are an important part of collaborating on GitHub.
+
+By making a PR, you’re requesting that someone pull in your changes and merge them into their branch. A PR allows you to compare the content on two branches, and all the changes or diffs(differences) are highlighted in green and red.
+
+As soon as you make a change, you can open a Pull Request. People use Pull Requests to start a discussion about commits (code review) even before the code is finished. This way you can get feedback as you go or help when you’re stuck.
+
+It's good practice to even make a Pull Request for branches in your own repository and merge it yourself to get more comfortable with PRs!
+
+A Pull-Request is a way for us to incorporate our feature branch and work back into our master branch. You can merge any branch into your current branch with the git merge command locally. However, we are completing this process on our remote repo through a PR.
+
+### I-DO: Create a Pull-Request and Merge Changes
+
+Let's Review our Pull-Request, and Merge it back into the Master Branch. TADA! Now we have a readme.
+
+## Break (10 min)
+
+## OverView of GitHub Workflow(5 min)
+> From [Github Guides](https://guides.github.com/introduction/flow/)
+
+To Recap, In Software Development, Github is very useful in managing and tracking updates and changes to our code.
+
+1. Discuss
+
+Discuss an idea for a new feature on the project mailing list. Agree on what needs to be done.
+
+2. Specify
+
+Create a Github issue for the feature.
+It's often useful to write the ticket as a brief functional spec, documenting the requirements as user stories. Github's support for checkboxes in markdown is useful here:
+
+3. Create a Branch
+
+Create a feature branch off the master to work on this issue:
+```
+$ git checkout -b [name of branch that solves issue]
+
+```
+Writing a name that has meaning to the issue we are working on
+
+4. Work and commit onto your branch
+
+Make changes/commits commits locally, then push your branch up to our remote repository
+
+5. Open a Pull-Request or PR
+
+6. Merge Branch into Master
+
+
+## YOU-DO - Pushing and PRs from Branches (10 min)
+
+Many OSS projects request that you create pull requests from a non-master branch.
+
+1. Fork and Clone https://github.com/ga-dc/git-tricks.
+2. Create and switch to a branch called `<your_name>_suggestion`.
+3. Add your own "trick".
+4. Commit, and push that change to your remote called 'origin' (your fork)
+```
+$ git push origin '<your_name>_suggestion'
+```
+5. Create a pull request from that branch to the upstream (ga-dc) master branch
+
+## YOU-DO - Submit an Issue to this Repo (5 min)
+
+Please Include Your LastName in the title of the Issue. Include in the content of the issue
+
+1. On a Scale from 1-5 how you are feeling about Git and Github
+2. What aspect of Git and Github are you still confused about
+
+
+## Closing (5 mins)
+
+Additional Exercises:
+
+* Please go back into Github and make sure your profile has your accurate FULL NAME, and a relevant Photo of you. Your presence on github is important! Potential employers will visit your profile!
