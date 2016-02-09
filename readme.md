@@ -174,23 +174,7 @@ The convention is to add an `upstream` remote.
 
 This remote is where we can pull from at any time, but do not have permission to push our changes.
 
-So let's go ahead and set up our new remote for our local curriculum repository.
-
-
-
-## YOU-DO: Setup Upstream for Curriculum Repo
-1. Students should visit the [Curriculum](https://github.com/ga-dc/curriculum)'s page and copy the ssh clone url to the clipboard
-2. In our terminal, change directories into our local curriculum directory
-```
-# in ~/wdi
-$ cd curriculum
-```
-3. See all current remotes with:
-`$ git remote -v`
-4. Add a new remote named upstream to our repository
-5. Pull down updates from the upstream remote
-
-When you finish, please go back into Github and make sure your profile has your accurate FULL NAME, and a relevant Photo of you.
+Please go back into Github and make sure your profile has your accurate FULL NAME, and a relevant Photo of you.
 Your presence on github is important! Potential employers will visit your profile!
 
 ## Closing
