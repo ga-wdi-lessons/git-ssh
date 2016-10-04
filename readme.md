@@ -109,8 +109,12 @@ Copy the SSH key to your clipboard with:
   # Copies the contents of the id_rsa.pub file to your clipboard
   ```
 
-*Note*: This is a Mac only command, if you are using a different machine run `cat ~/.ssh/id_rsa.pub` and manually copy the output.
-It's important to copy the key exactly without adding newlines or whitespace.
+> #### *Note*:
+> `pbcopy` is a Mac only command.
+ 
+> If you are using Linux, type:
+> `cat ~/.ssh/id_rsa.pub` and manually copy the output.
+***It's important to copy the key exactly without adding newlines or whitespace.***
 
 Keep in mind that your key may also be named id_dsa.pub, id_ecdsa.pub or id_ed25519.pub, in which case you must change the filename in the above command
 
