@@ -1,4 +1,4 @@
-# Generating SSH Keys and Linking with Github
+## Generating SSH Keys and Linking with Github
 
 ## Learning Objectives
 * Explain how SSH serves as extra layer of security
@@ -111,7 +111,7 @@ Copy the SSH key to your clipboard with:
 
 > #### *Note*:
 > `pbcopy` is a Mac only command.
- 
+
 > If you are using Linux, type:
 > `cat ~/.ssh/id_rsa.pub` and manually copy the output.
 ***It's important to copy the key exactly without adding newlines or whitespace.***
